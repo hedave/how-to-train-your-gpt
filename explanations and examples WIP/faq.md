@@ -195,10 +195,12 @@ Rule of thumb: each parameter uses 2 bytes (bfloat16) for weights plus
 
 ### Q: PyTorch 2.6+ fails to load my checkpoint
 
-PyTorch 2.6 changed `torch.load` defaults to `weights_only=True`.
-Pass `weights_only=False` to load checkpoints containing custom classes
-like GPTConfig. Our code handles this. If you use an older notebook
-that does not have the fix add `weights_only=False` to your load call.
+PyTorch 2.6 changed `torch.load` defaults to `weights_only=True`, which
+blocks pickle gadgets. We save `GPTConfig` as a plain dict with
+`dataclasses.asdict` and load with `weights_only=True`. Do not pass
+`weights_only=False` — that re-opens remote code execution in
+`torch.load` (PYSEC-2025-41). If an old checkpoint still contains a
+pickled `GPTConfig` object, re-save it as a dict of primitives.
 
 ### Q: I get a shape mismatch error in attention
 

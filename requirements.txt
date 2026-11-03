@@ -1,7 +1,20 @@
+# Direct dependencies with minimum versions that close known advisories.
+# Install a reproducible tree with:
+#   pip install -r requirements.txt -c constraints.txt
+#
+# torch: PYSEC-2025-41 / CVE-2025-32434 (torch.load RCE) is fixed in 2.6.0.
+#        CVE-2026-24747 (weights_only unpickler RCE) is fixed in 2.10.0.
+#        CVE-2025-3000 (torch.jit.script memory corruption) is fixed in 2.13.0.
+# numpy: heap-buffer overflow in 2.2.0–2.2.5, fixed in 2.2.6.
+# datasets: CVE-2026-66007 path traversal, fixed in 5.0.1.
+# notebook / jupyterlab / tornado: 2026 Jupyter and Tornado advisories.
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch>=2.0
-tiktoken
-datasets
-numpy
-matplotlib
-jupyter
+torch>=2.13.0
+tiktoken>=0.7.0
+datasets>=5.0.1
+numpy>=2.2.6
+matplotlib>=3.8.4
+jupyter>=1.1.1
+notebook>=7.6.3
+jupyterlab>=4.6.4
+tornado>=6.6

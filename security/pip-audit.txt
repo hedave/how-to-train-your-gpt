@@ -1,0 +1,25 @@
+pip-audit of the pinned set in constraints.txt
+Date: 2026-11-03
+Python: 3.12.3
+Command:
+  pip-audit -r constraints.txt --no-deps --disable-pip --strict --desc on -s pypi
+  pip-audit -r constraints.txt --no-deps --disable-pip --strict --desc on -s osv
+
+Note: the lock pins torch==2.15.0+cpu (PyTorch CPU extra index). pip-audit cannot
+look up local version tags on PyPI, so the audit used torch==2.15.0 (same
+upstream release) and failed closed until that lookup succeeded. Direct OSV
+queries for torch 2.15.0 and datasets 5.1.0 also returned no vulns.
+
+=== PyPI advisory service ===
+No known vulnerabilities found
+exit 0
+
+=== OSV advisory service ===
+No known vulnerabilities found
+exit 0
+
+=== OSV API (torch 2.15.0) ===
+{}
+
+=== OSV API (datasets 5.1.0) ===
+{}

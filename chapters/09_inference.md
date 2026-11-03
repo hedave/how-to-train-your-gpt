@@ -233,11 +233,13 @@ def load_checkpoint(checkpoint_path: str, device: torch.device):
          we need to load this state back — weights, config, everything.
     """
     # WHAT: Load the checkpoint dictionary from disk
-    # WHY: map_location ensures it loads to the right device (CPU/GPU)
-    checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
+    # WHY: map_location ensures it loads to the right device (CPU/GPU).
+    #      weights_only=True blocks pickle gadgets (PYSEC-2025-41 / CVE-2026-24747).
+    checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=True)
 
-    # WHAT: Recreate the model from the saved config
-    model = GPT(checkpoint["config"])
+    # WHAT: Recreate the model from the saved config dict
+    # WHY: Config is stored as primitives via dataclasses.asdict, not a pickled class
+    model = GPT(GPTConfig(**checkpoint["config"]))
 
     # WHAT: Load the trained weights into the model
     # WHY: state_dict contains every parameter value learned during training

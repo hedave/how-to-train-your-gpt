@@ -68,23 +68,14 @@ python -m venv gpt_env
 source gpt_env/bin/activate          # Mac/Linux
 # gpt_env\Scripts\activate           # Windows
 
-# Step 3: Install PyTorch (choose the right one)
-# For CPU only (default, works everywhere):
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+# Step 3: Install pinned dependencies (CPU torch by default)
+pip install -r requirements.txt -c constraints.txt
 
-# For Apple Silicon (M1/M2/M3):
-# pip install torch torchvision torchaudio
+# GPU / Apple Silicon: install a matching torch>=2.13 wheel, then
+# pip install -r requirements.txt -c constraints.txt
+# For CUDA, use the extra index from https://pytorch.org/get-started/locally/
 
-# For NVIDIA GPU (CUDA 11.8):
-# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-
-# For NVIDIA GPU (CUDA 12.1 - newer cards like RTX 40 series):
-# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-
-# Step 4: Install remaining packages
-pip install tiktoken datasets numpy matplotlib
-
-# Step 5: Verify everything works
+# Step 4: Verify everything works
 python -c "import torch; print(f'PyTorch {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}')"
 ```
 

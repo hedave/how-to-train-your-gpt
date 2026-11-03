@@ -3,3 +3,23 @@ checkpoints/
 __pycache__/
 *.pyc
 loss_curve.png
+
+# Virtualenvs
+.venv/
+venv/
+gpt_env/
+env/
+
+# Secrets and credentials — never commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa
+id_ed25519
+credentials.json
+secrets.json
+hf_token
+.huggingface/token
+

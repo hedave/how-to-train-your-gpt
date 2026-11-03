@@ -125,11 +125,9 @@ python -m venv gpt_env
 source gpt_env/bin/activate          # Mac/Linux
 # gpt_env\Scripts\activate           # Windows
 
-# 3. Install dependencies (CPU version. For GPU see below)
-pip install torch tiktoken datasets numpy matplotlib --index-url https://download.pytorch.org/whl/cpu
-
-# Or use the requirements file
-pip install -r requirements.txt
+# 3. Install pinned dependencies (CPU torch wheels). For GPU, drop the extra index
+#    and install a CUDA build of torch>=2.13, still using constraints.txt.
+pip install -r requirements.txt -c constraints.txt
 
 # 4. Verify GPU (optional but recommended)
 python -c "import torch; print(f'CUDA: {torch.cuda.is_available()}')"
@@ -157,8 +155,8 @@ Alongside the textbook, each chapter has a companion notebook you can run live. 
 We're going to run this whole project on a very small dataset so you can watch training happen in minutes rather than weeks. Every notebook is self-contained. Open it, run all cells and you'll see the model learn in real time.
 
 ```bash
-# Install everything you need
-pip install jupyter tiktoken torch numpy datasets matplotlib --index-url https://download.pytorch.org/whl/cpu
+# Install everything you need (includes jupyter)
+pip install -r requirements.txt -c constraints.txt
 
 # Start with chapter 2 (tokenization)
 jupyter notebook notebooks/02_tokenization.ipynb
