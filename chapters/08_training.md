@@ -369,6 +369,7 @@ def create_optimizer(model, config):
 import torch
 import time
 import os
+from dataclasses import asdict
 
 
 def train(model, train_dataset, config, device, save_dir="checkpoints"):
@@ -459,7 +460,7 @@ def train(model, train_dataset, config, device, save_dir="checkpoints"):
                         "step": step, "model_state_dict": model.state_dict(),
                         "optimizer_state_dict": optimizer.state_dict(),
                         "scheduler_state_dict": scheduler.state_dict(),
-                        "loss": avg_loss, "config": config,
+                        "loss": avg_loss, "config": asdict(config),
                     }
                     torch.save(checkpoint, f"{save_dir}/checkpoint_step_{step}.pt")
                     print(f"   Saved checkpoint at step {step}")

@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import math
 import time
 import os
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from torch.utils.data import Dataset, DataLoader
 import tiktoken
 from datasets import load_dataset
@@ -379,6 +379,37 @@ def plot_loss(loss_history, save_path="loss_curve.png"):
     print(f"Loss curve saved to {save_path}")
 
 
+def save_checkpoint(path, model, config, **extra):
+    """Save weights plus a primitive config dict. Avoid pickling GPTConfig."""
+    payload = {
+        "model_state_dict": model.state_dict(),
+        "config": asdict(config),
+        **extra,
+    }
+    torch.save(payload, path)
+
+
+def load_checkpoint(path, device):
+    """Load a checkpoint with weights_only=True. Fail closed on unsafe objects."""
+    device = device if isinstance(device, torch.device) else torch.device(device)
+    checkpoint = torch.load(path, map_location=device, weights_only=True)
+    raw_config = checkpoint.get("config")
+    if not isinstance(raw_config, dict):
+        raise ValueError(
+            "Checkpoint config must be a dict of primitives. "
+            "Refusing to unpickle a custom class."
+        )
+    raw_config = dict(raw_config)
+    if isinstance(raw_config.get("betas"), list):
+        raw_config["betas"] = tuple(raw_config["betas"])
+    config = GPTConfig(**raw_config)
+    model = GPT(config)
+    model.load_state_dict(checkpoint["model_state_dict"])
+    model = model.to(device)
+    model.eval()
+    return model, checkpoint
+
+
 # ===== MAIN =====
 def main():
     print("How to Train Your GPT\n")
@@ -434,10 +465,7 @@ def main():
         print()
 
     os.makedirs("checkpoints", exist_ok=True)
-    torch.save({
-        "model_state_dict": model.state_dict(),
-        "config": config,
-    }, "checkpoints/model.pt")
+    save_checkpoint("checkpoints/model.pt", model, config)
     print("Model saved to checkpoints/model.pt")
 
 

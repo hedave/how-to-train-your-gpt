@@ -196,7 +196,7 @@ With bfloat16 weights: ~8 bytes per parameter for full training.
 | `nan in loss` | Learning rate too high or gradients exploded. Lower LR or add gradient clipping |
 | `loss = 10.82` | Model is random. Normal at step 0. If it stays there check optimizer and loss function |
 | `size mismatch` | Shape error. Check batch/seq/head dimensions. Common bug in reshape/permute |
-| `weights_only load failed` | PyTorch 2.6+ requires `weights_only=False` for checkpoints with custom classes |
+| `weights_only load failed` | Checkpoint still pickles a custom class. Re-save config with `asdict` and load with `weights_only=True` |
 
 ## Key files in the repo
 
